@@ -47,7 +47,7 @@ tv = TvDatafeed()
 account_number=9651099
 path_to_data=r'C:\Users\herma\Desktop\collected data try 123 (1).xlsx'
 
-datee='2024-01-14'
+datee='2024-01-26'
 Is_Real_off= "YESS ACTUALL MONEY"   
 
 symbolD= 'DE30EUR' #'GRXEUR' 
@@ -591,6 +591,7 @@ def DataFrame_long_entry_process():
            else:
                section_value = 2.3 if adx_sma[2] >= 0 else 3
 
+
        df.iat[-1, df.columns.get_loc("Section")] = section_value
        adx_longtrend = ADXLongtrend()
        if df.iloc[len(df) - 2]["Sortino Difference"] > 0.0:
@@ -599,13 +600,15 @@ def DataFrame_long_entry_process():
 
            if adx_longtrend[0] > 0:
                if adx_longtrend[2] > 0:
-                   df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 2")] = 1
                    df.iloc[len(df) - 1, df.columns.get_loc("Cases")] = 6
-                   Long_buy()
+                   if df.loc[(len(df)-1)]["Section"]< 3:
+                       df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 2")] = 1
+                       Long_buy()
                elif adx_longtrend[1] > 0:
                    df.iloc[len(df) - 1, df.columns.get_loc("Cases")] = 3
-                   df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 2")] = 1
-                   Long_buy()
+                   if df.loc[(len(df)-1)]["Section"]< 3:
+                       df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 2")] = 1
+                       Long_buy()
                df.loc[(len(df)-1),["Cases"]] =2
                if df.loc[(len(df)-1)]["Section"]< 2.2:
                    df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 2")]=1
@@ -636,46 +639,58 @@ def DataFrame_long_entry_process():
                
                    
        else :
-           if df.loc[(len(df)-2)]["Sortino Difference"]< 0.0 and ADXLongtrend()[0]>0 and ADXLongtrend()[2]>0:
+          
+           if adx_longtrend[0]>0 and adx_longtrend[2]>0:
+               
                df.loc[(len(df)-1),["Cases"]]=6
                df.loc[(len(df)-1),["Happens Modified 1"]]=int(1)
-               df.loc[(len(df)-1),["Happens Modified 2"]]=int(0)
-               Long_buy()
-           elif df.loc[(len(df)-2)]['Fast move(15)']>= df.loc[(len(df)-2)]['Fast move(15) diff 3'] and df.loc[(len(df)-2)]["Fast move(7)"]> df.loc[(len(df)-2)]['Fast move(15)'] and df.loc[(len(df)-2)]["Fast move (5 Delay)"]> df.loc[(len(df)-2)]['Fast move(15)']:
-           
-               if adx_longtrend[0] > 0:
-                   if adx_longtrend[1] > 0:
-                       df.iloc[len(df) - 1, df.columns.get_loc("Cases")] = 3
-                       df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 2")] = 1
-                       df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 1")] = 1
-                       Long_buy()
-                   else:
-                       df.loc[(len(df)-1),["Cases"]] =2
-                       df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 1")] = 1
-                       df.loc[(len(df)-1),["Happens Modified 2"]]=int(1)
-                       Long_buy()
-                   
-                   
-               else :
-                   if adx_longtrend[1] > 0 and adx_longtrend[2] > 0:
-                       df.iloc[len(df) - 1, df.columns.get_loc("Cases")] = 5
-                       df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 1")] = 1
-                       df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 2")] = 1
-                       Long_buy()
-                   
-                   elif adx_longtrend[2] > 0 and adx_longtrend[1] < 0:
-                       df.iloc[len(df) - 1, df.columns.get_loc("Cases")] = 4
-                       df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 1")] = 1
-                       df.loc[(len(df)-1),["Happens Modified 2"]]=int(1)
-                       Long_buy()
-                       
-                   elif adx_longtrend[1] < 0:
-                       df.iloc[len(df) - 1, df.columns.get_loc("Cases")] = 1
-                       df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 1")] = 1
-                       df.loc[(len(df)-1),["Happens Modified 2"]]=int(1)
-                       Long_buy()
+               if df.loc[(len(df)-1)]["Section"]< 3:
+                   df.loc[(len(df)-1),["Happens Modified 2"]]=int(1)
+                   Long_buy()
+          
+           elif adx_longtrend[0] > 0:
+                
+                if adx_longtrend[1] > 0:
+                    
+                    df.iloc[len(df) - 1, df.columns.get_loc("Cases")] = 3
+                    if df.loc[(len(df)-2)]['Fast move(15)']>= df.loc[(len(df)-2)]['Fast move(15) diff 3'] and df.loc[(len(df)-2)]["Fast move(7)"]> df.loc[(len(df)-2)]['Fast move(15)'] and df.loc[(len(df)-2)]["Fast move (5 Delay)"]> df.loc[(len(df)-2)]['Fast move(15)']:
+                        df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 2")] = 1
+                        df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 1")] = 1
+                        Long_buy()
+                else:
+                    
+                    df.loc[(len(df)-1),["Cases"]] =2
+                    if df.loc[(len(df)-2)]['Fast move(15)']>= df.loc[(len(df)-2)]['Fast move(15) diff 3'] and df.loc[(len(df)-2)]["Fast move(7)"]> df.loc[(len(df)-2)]['Fast move(15)'] and df.loc[(len(df)-2)]["Fast move (5 Delay)"]> df.loc[(len(df)-2)]['Fast move(15)']:
+                        df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 1")] = 1
+                        df.loc[(len(df)-1),["Happens Modified 2"]]=int(1)
+                        Long_buy()
+                
+                
+           else :
+                
+                if adx_longtrend[1] > 0 and adx_longtrend[2] > 0:
+                    df.iloc[len(df) - 1, df.columns.get_loc("Cases")] = 5
+                    if df.loc[(len(df)-2)]['Fast move(15)']>= df.loc[(len(df)-2)]['Fast move(15) diff 3'] and df.loc[(len(df)-2)]["Fast move(7)"]> df.loc[(len(df)-2)]['Fast move(15)'] and df.loc[(len(df)-2)]["Fast move (5 Delay)"]> df.loc[(len(df)-2)]['Fast move(15)']:
+                        df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 1")] = 1
+                        df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 2")] = 1
+                        Long_buy()
+                
+                elif adx_longtrend[2] > 0 and adx_longtrend[1] < 0:
+                    df.iloc[len(df) - 1, df.columns.get_loc("Cases")] = 4
+                    if df.loc[(len(df)-2)]['Fast move(15)']>= df.loc[(len(df)-2)]['Fast move(15) diff 3'] and df.loc[(len(df)-2)]["Fast move(7)"]> df.loc[(len(df)-2)]['Fast move(15)'] and df.loc[(len(df)-2)]["Fast move (5 Delay)"]> df.loc[(len(df)-2)]['Fast move(15)']:
+                        df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 1")] = 1
+                        df.loc[(len(df)-1),["Happens Modified 2"]]=int(1)
+                        Long_buy()
+                    
+                elif adx_longtrend[1] < 0:
+                    df.iloc[len(df) - 1, df.columns.get_loc("Cases")] = 1
+                    if df.loc[(len(df)-2)]['Fast move(15)']>= df.loc[(len(df)-2)]['Fast move(15) diff 3'] and df.loc[(len(df)-2)]["Fast move(7)"]> df.loc[(len(df)-2)]['Fast move(15)'] and df.loc[(len(df)-2)]["Fast move (5 Delay)"]> df.loc[(len(df)-2)]['Fast move(15)']:
+                        df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 1")] = 1
+                        df.loc[(len(df)-1),["Happens Modified 2"]]=int(1)
+                        Long_buy()
                  
            if df.loc[(len(df)-2)]["Fast Difference"]> float(0.0) :
+                   
                   #and df.loc[(len(df)-1)]["Section"]==1
                    df.loc[(len(df)-1),["Happens norm"]]=int(1)
                    
@@ -686,7 +701,7 @@ def DataFrame_long_entry_process():
        df.loc[last_row_index, "Entry avanza"] = float(avanza.get_warrant_info(str(Long_Order_id())).get("quote").get("sell"))
        df.loc[last_row_index, "Orderbookid"] = int(Long_Order_id())
        
-       df.to_excel(path_to_data)
+       #df.to_excel(path_to_data)
        #print(datetime.now())
 
 #DataFrame_long_entry_process()        
@@ -717,13 +732,15 @@ def DataFrame_Short_entry_process():
 
            if adx_longtrend[0] > 0:
                if adx_longtrend[2] > 0:
-                   df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 2")] = 1
                    df.iloc[len(df) - 1, df.columns.get_loc("Cases")] = 6
-                   Short_buy()
+                   if df.loc[(len(df)-1)]["Section"]< 3:
+                       df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 2")] = 1
+                       Short_buy()
                elif adx_longtrend[1] > 0:
                    df.iloc[len(df) - 1, df.columns.get_loc("Cases")] = 3
-                   df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 2")] = 1
-                   Short_buy()
+                   if df.loc[(len(df)-1)]["Section"]< 3:
+                       df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 2")] = 1
+                       Short_buy()
                df.loc[(len(df)-1),["Cases"]] =2
                if df.loc[(len(df)-1)]["Section"]< 2.2:
                    df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 2")]=1
@@ -754,44 +771,47 @@ def DataFrame_Short_entry_process():
                
                    
        else :
-           if df.loc[(len(df)-2)]["Sortino Difference"]< 0.0 and ADXLongtrend()[0]>0 and ADXLongtrend()[2]>0:
+           if  ADXLongtrend()[0]>0 and ADXLongtrend()[2]>0:
                df.loc[(len(df)-1),["Cases"]]=6
                df.loc[(len(df)-1),["Happens Modified 1"]]=int(1)
-               df.loc[(len(df)-1),["Happens Modified 2"]]=int(0)
-               Short_buy()
-           elif df.loc[(len(df)-2)]['Fast move(15)']>= df.loc[(len(df)-2)]['Fast move(15) diff 3'] and df.loc[(len(df)-2)]["Fast move(7)"]> df.loc[(len(df)-2)]['Fast move(15)'] and df.loc[(len(df)-2)]["Fast move (5 Delay)"]> df.loc[(len(df)-2)]['Fast move(15)']:
-           
-               if adx_longtrend[0] > 0:
+               if df.loc[(len(df)-1)]["Section"]< 3 :
+                   df.loc[(len(df)-1),["Happens Modified 2"]]=int(1)
+                   Short_buy()
+
+           elif adx_longtrend[0] > 0:
                    if adx_longtrend[1] > 0:
                        df.iloc[len(df) - 1, df.columns.get_loc("Cases")] = 3
-                       df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 2")] = 1
-                       df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 1")] = 1
-                       Short_buy()
+                       if df.loc[(len(df)-2)]['Fast move(15)']>= df.loc[(len(df)-2)]['Fast move(15) diff 3'] and df.loc[(len(df)-2)]["Fast move(7)"]> df.loc[(len(df)-2)]['Fast move(15)'] and df.loc[(len(df)-2)]["Fast move (5 Delay)"]> df.loc[(len(df)-2)]['Fast move(15)']:
+                           df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 2")] = 1
+                           df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 1")] = 1
+                           Short_buy()
                    else:
                        df.loc[(len(df)-1),["Cases"]] =2
-                       df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 1")] = 1
-                       df.loc[(len(df)-1),["Happens Modified 2"]]=int(1)
-                       Short_buy()
-                   
-                   
-               else :
+                       if df.loc[(len(df)-2)]['Fast move(15)']>= df.loc[(len(df)-2)]['Fast move(15) diff 3'] and df.loc[(len(df)-2)]["Fast move(7)"]> df.loc[(len(df)-2)]['Fast move(15)'] and df.loc[(len(df)-2)]["Fast move (5 Delay)"]> df.loc[(len(df)-2)]['Fast move(15)']:
+                           df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 1")] = 1
+                           df.loc[(len(df)-1),["Happens Modified 2"]]=int(1)
+                           Short_buy()          
+           else:
                    if adx_longtrend[1] > 0 and adx_longtrend[2] > 0:
                        df.iloc[len(df) - 1, df.columns.get_loc("Cases")] = 5
-                       df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 1")] = 1
-                       df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 2")] = 1
-                       Short_buy()
+                       if df.loc[(len(df)-2)]['Fast move(15)']>= df.loc[(len(df)-2)]['Fast move(15) diff 3'] and df.loc[(len(df)-2)]["Fast move(7)"]> df.loc[(len(df)-2)]['Fast move(15)'] and df.loc[(len(df)-2)]["Fast move (5 Delay)"]> df.loc[(len(df)-2)]['Fast move(15)']:
+                           df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 1")] = 1
+                           df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 2")] = 1
+                           Short_buy()
                    
                    elif adx_longtrend[2] > 0 and adx_longtrend[1] < 0:
                        df.iloc[len(df) - 1, df.columns.get_loc("Cases")] = 4
-                       df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 1")] = 1
-                       df.loc[(len(df)-1),["Happens Modified 2"]]=int(1)
-                       Short_buy()
+                       if df.loc[(len(df)-2)]['Fast move(15)']>= df.loc[(len(df)-2)]['Fast move(15) diff 3'] and df.loc[(len(df)-2)]["Fast move(7)"]> df.loc[(len(df)-2)]['Fast move(15)'] and df.loc[(len(df)-2)]["Fast move (5 Delay)"]> df.loc[(len(df)-2)]['Fast move(15)']:
+                           df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 1")] = 1
+                           df.loc[(len(df)-1),["Happens Modified 2"]]=int(1)
+                           Short_buy()
                        
                    elif adx_longtrend[1] < 0:
                        df.iloc[len(df) - 1, df.columns.get_loc("Cases")] = 1
-                       df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 1")] = 1
-                       df.loc[(len(df)-1),["Happens Modified 2"]]=int(1)
-                       Short_buy()
+                       if df.loc[(len(df)-2)]['Fast move(15)']>= df.loc[(len(df)-2)]['Fast move(15) diff 3'] and df.loc[(len(df)-2)]["Fast move(7)"]> df.loc[(len(df)-2)]['Fast move(15)'] and df.loc[(len(df)-2)]["Fast move (5 Delay)"]> df.loc[(len(df)-2)]['Fast move(15)']:
+                           df.iloc[len(df) - 1, df.columns.get_loc("Happens Modified 1")] = 1
+                           df.loc[(len(df)-1),["Happens Modified 2"]]=int(1)
+                           Short_buy()
                  
            if df.loc[(len(df)-2)]["Fast Difference"]> float(0.0) :
                   #and df.loc[(len(df)-1)]["Section"]==1
@@ -799,14 +819,11 @@ def DataFrame_Short_entry_process():
 
        current_price_value = float(current_price())
        short_order_id_value = Short_Order_id()
-       last_row_index = len(df) - 1
-        
+       last_row_index = len(df) - 1 
        df.iloc[last_row_index, df.columns.get_loc("Direction")] = "Kort"
-       df.iloc[last_row_index, df.columns.get_loc("Entry tradingview")] = current_price_value
-        
+       df.iloc[last_row_index, df.columns.get_loc("Entry tradingview")] = current_price_value       
        avanza_info = avanza.get_warrant_info(str(short_order_id_value))
        df.iloc[last_row_index, df.columns.get_loc("Entry avanza")] = avanza_info.get("quote").get("sell")
-        
        df.iloc[last_row_index, df.columns.get_loc("Orderbookid")] = int(short_order_id_value)
        df.to_excel(path_to_data)
        #print(datetime.now())
@@ -915,9 +932,7 @@ def DataFrame_Exit_process():
                  print("drawdown < -0.68, optimal time to put money in")
             if df.loc[(len(df)-1)]["Transfer"]==int(1):
                  print("Transfer 0.75 to different acount, keep 0.25 in play. 0.25 profit, and at drawdown warning 0.25, 0.5 of remaining into play")
-                
-            
-        ##############
+ 
         #to excell
             df.loc[(len(df)-1),['Close time']]= datetime.now()
             print("exit complete")
@@ -1014,9 +1029,12 @@ def distance():
 #DataFrame_Exit_process()
 #df.drop(index=df.index[-1], axis=0, inplace=True) 
 #df.to_excel(path_to_data)
+
 #Long_add_to_watchlist()
-
-
+#Short_add_to_watchlist()
+#Long_Remove_watchlist()
+#Short_Remove_watchlist()
+#print(ADX1hSMA()[0])
 print(df)
 
 
@@ -1167,6 +1185,6 @@ while True:
     except Exception as e:
         # If an error occurs, log the error and sleep for a bit
         print(f"Error: {e}",datetime.now())
+        print(ADX1hSMA()[0])
         time.sleep(3)
        
-
